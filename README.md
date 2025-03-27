@@ -52,30 +52,36 @@ Se estiver utilizando Maven, o arquivo `pom.xml` contém as dependências necess
 </dependencies>
 ```
 
-Configuração do GraphQL
+## Configuração do GraphQL
 
 A configuração do GraphQL pode ser feita no arquivo application.properties ou application.yml:
 
+```
 graphql.servlet.mapping=/graphql
 graphql.servlet.enabled=true
 graphql.servlet.corsEnabled=true
+```
 
-Modelos de Dados
-Post
+## Modelos de Dados
+
+### Post
 
 O modelo Post representa um post de blog com um identificador e um conteúdo.
 
+```
 public class Post {
     private String id;
     private String content;
 
     // Getters and Setters
 }
+```
 
-Comment
+### Comment
 
 O modelo Comment representa um comentário associado a um post.
 
+```
 public class Comment {
     private String id;
     private String content;
@@ -83,65 +89,73 @@ public class Comment {
 
     // Getters and Setters
 }
+```
 
-GraphQL Schema
+## GraphQL Schema
 
 O arquivo schema.graphqls define as consultas e mutações disponíveis:
 
+```
 type Post {
     id: ID!
     content: String!
+    comments: [Comment]
 }
 
 type Comment {
     id: ID!
     content: String!
-    post: Post!
+    postId: String!
 }
 
 type Query {
-    posts: [Post]
-    postById(id: ID!): Post
+    postById(id: ID!) : Post
+    commentById(id: ID!) : Comment
 }
 
 type Mutation {
-    createPost(content: String!): Post
-    createComment(postId: ID!, content: String!): Comment
+    createPost(content: String!) : Post
+    createComment(content: String!, postId: String!) : Comment
 }
+```
 
-Consultas
+## Consultas
 
-    Consulta para obter todos os posts:
-
+Consulta para obter todos os posts:
+```
 query {
     posts {
         id
         content
     }
 }
+```
 
-    Consulta para obter um post por ID:
+Consulta para obter um post por ID:
 
+```
 query {
     postById(id: "1") {
         id
         content
     }
 }
+```
 
 Mutações
 
-    Criar um novo post:
-
+Criar um novo post:
+```
 mutation {
     createPost(content: "My first post") {
         id
         content
     }
 }
+```
+Criar um novo comentário em um post:
 
-    Criar um novo comentário em um post:
-
+```
 mutation {
     createComment(postId: "1", content: "Great post!") {
         id
@@ -151,24 +165,25 @@ mutation {
         }
     }
 }
+```
 
-Iniciar o Projeto
+## Iniciar o Projeto
 
-    Clone o repositório:
+Clone o repositório:
 
-git clone https://github.com/seu-usuario/seu-repositorio.git
+    git clone https://github.com/seu-usuario/seu-repositorio.git
 
-    Navegue até o diretório do projeto:
+Navegue até o diretório do projeto:
 
-cd seu-repositorio
+    cd seu-repositorio
 
-    Execute o projeto com Maven:
+Execute o projeto com Maven:
 
-mvn spring-boot:run
+    mvn spring-boot:run
 
 Ou, se estiver usando Gradle:
 
-./gradlew bootRun
+    ./gradlew bootRun
 
 O servidor estará rodando em http://localhost:8080.
 Testando a API GraphQL
